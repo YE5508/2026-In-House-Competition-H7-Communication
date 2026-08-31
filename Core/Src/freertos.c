@@ -83,6 +83,13 @@ const osThreadAttr_t Ball_Control_attributes = {
   .stack_size = 64 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for Yaw_Feedback */
+osThreadId_t Yaw_FeedbackHandle;
+const osThreadAttr_t Yaw_Feedback_attributes = {
+  .name = "Yaw_Feedback",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -94,6 +101,7 @@ void Chassis_Control_Task(void *argument);
 void BigBlock_Control_Task(void *argument);
 void SkyBlock_Control_Task(void *argument);
 void Ball_Control_Task(void *argument);
+void Yaw_Feedback_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -139,6 +147,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of Ball_Control */
   Ball_ControlHandle = osThreadNew(Ball_Control_Task, NULL, &Ball_Control_attributes);
+
+  /* creation of Yaw_Feedback */
+  Yaw_FeedbackHandle = osThreadNew(Yaw_Feedback_Task, NULL, &Yaw_Feedback_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -238,6 +249,24 @@ void Ball_Control_Task(void *argument)
     osDelay(1);
   }
   /* USER CODE END Ball_Control_Task */
+}
+
+/* USER CODE BEGIN Header_Yaw_Feedback_Task */
+/**
+* @brief Function implementing the Yaw_Feedback thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Yaw_Feedback_Task */
+void Yaw_Feedback_Task(void *argument)
+{
+  /* USER CODE BEGIN Yaw_Feedback_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Yaw_Feedback_Task */
 }
 
 /* Private application code --------------------------------------------------*/

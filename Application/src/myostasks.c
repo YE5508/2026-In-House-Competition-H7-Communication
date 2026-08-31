@@ -70,3 +70,12 @@ void Ball_Control_Task(void *argument)
     osDelay(1);
   }
 }
+
+void Yaw_Feedback_Task(void *argument)
+{
+    for(;;)
+  {
+    Deal_TxPack(&TxMsgPack);
+    osDelay(1);
+  }
+}
