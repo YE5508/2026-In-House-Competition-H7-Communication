@@ -81,7 +81,7 @@ void Car_CtrlWord_Unpack(void)
     Ball_CtrlWord.Ball_Put.pre      = Ball_CtrlWord.Ball_Put.now;
     Ball_CtrlWord.Ball_Put.now      = RxMsgPack.bools[24];
     Ball_CtrlWord.Ball_AirPump      = RxMsgPack.bools[25];
-
+    Ball_CtrlWord.Ball_BallorBlock  = RxMsgPack.bools[26];
 
 }
 
@@ -105,6 +105,9 @@ static bool Protocol_EnqueueCommand(FDCAN_SendQueueType* queue,uint32_t id, uint
 /*将解包后的蓝牙控制命令按照不同的机构分别进CAN发送队列*/
 void Chassis_CtrlWord_SendCAN(void)
 {
+    static bool lock_angle_valid = false;
+    static uint8_t last_lock_angle_state = 0U;
+
     uint8_t data[6];
     int16_t speed;
 
@@ -124,11 +127,16 @@ void Chassis_CtrlWord_SendCAN(void)
         Protocol_EnqueueCommand(&Chassis_queue,CHASSIS_RESET, 'R', 'S');
     }
 
-    if (Chassis_CtrlWord.Chassis_LockAngle)
+    if(Chassis_CtrlWord.Chassis_LockAngle)
     {
         memcpy(data, &Chassis_CtrlWord.Angle, sizeof(Chassis_CtrlWord.Angle));
         Protocol_Enqueue(&Chassis_queue,CHASSIS_LOCK_ANGLE, 4U, data);
     }
+
+
+ 
+
+    
 
 }
 
@@ -157,7 +165,8 @@ void BigBlock_CtrlWord_SendCAN(void)
     if(BigBlock_CtrlWord.BigBlock_Put.now&&!BigBlock_CtrlWord.BigBlock_Put.pre)
     {
         Protocol_EnqueueCommand(&BigBlock_queue,BIGBLOCK_PUT, 'P', BigBlock_CtrlWord.BigBlock_LayerHeight+1);
-    }    
+    }
+
 }
 
 void Sky_CtrlWord_t_SendCAN(void)
@@ -213,6 +222,9 @@ void Ball_CtrlWord_t_SendCAN(void)
 {
     static bool air_pump_state_valid = false;
     static uint8_t last_air_pump_state = 0U;
+    static bool ballorblock_state_valid=false;
+    static uint8_t last_ballorblock_state =0U;
+
 
     if(Ball_CtrlWord.Ball_Enable&&Ball_CtrlWord.Ball_Protect.now&&!Ball_CtrlWord.Ball_Protect.pre)
     {
@@ -245,6 +257,14 @@ void Ball_CtrlWord_t_SendCAN(void)
         {
             last_air_pump_state = Ball_CtrlWord.Ball_AirPump;
             air_pump_state_valid = true;
+        }
+    }
+    if(!ballorblock_state_valid|| Ball_CtrlWord.Ball_BallorBlock!=last_ballorblock_state)
+    {
+        if(Protocol_EnqueueCommand(&Ball_queue,BALL_BALLORBLOCK,'S',Ball_CtrlWord.Ball_BallorBlock))
+        {
+            last_ballorblock_state = Ball_CtrlWord.Ball_BallorBlock;
+            ballorblock_state_valid = true;
         }
     }
 }

@@ -81,6 +81,7 @@ typedef struct
     Btn_t    Ball_Carry;            // bools[23] 持球(按钮)
     Btn_t    Ball_Put;              // bools[24] 放球(按钮)
     uint8_t  Ball_AirPump;          // bools[25] 气泵开/关(开关)
+    uint8_t  Ball_BallorBlock;      //bools[26]  球/块模式切换
 
 }Ball_CtrlWord_t;
 

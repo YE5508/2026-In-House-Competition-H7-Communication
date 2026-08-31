@@ -23,5 +23,6 @@ extern __RAM_D2_ ALIGN_32B uint8_t UART9_RxBuffer[UART_RX_BUFFER_SIZE];
 
 /* main.c 的 HAL_TIM_PeriodElapsedCallback 会转发到这里 */
 void TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void UART_Start_Recieve(void);
 
 #endif /* __IQRHANDLER_H__ */
