@@ -55,10 +55,31 @@ const osThreadAttr_t AlarmTask_attributes = {
   .stack_size = 64 * 4,
   .priority = (osPriority_t) osPriorityBelowNormal,
 };
-/* Definitions for CAN_SendcmdTask */
-osThreadId_t CAN_SendcmdTaskHandle;
-const osThreadAttr_t CAN_SendcmdTask_attributes = {
-  .name = "CAN_SendcmdTask",
+/* Definitions for Chassis_Control */
+osThreadId_t Chassis_ControlHandle;
+const osThreadAttr_t Chassis_Control_attributes = {
+  .name = "Chassis_Control",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for BigBlock_Contro */
+osThreadId_t BigBlock_ControHandle;
+const osThreadAttr_t BigBlock_Contro_attributes = {
+  .name = "BigBlock_Contro",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for SkyBlock_Contro */
+osThreadId_t SkyBlock_ControHandle;
+const osThreadAttr_t SkyBlock_Contro_attributes = {
+  .name = "SkyBlock_Contro",
+  .stack_size = 64 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Ball_Control */
+osThreadId_t Ball_ControlHandle;
+const osThreadAttr_t Ball_Control_attributes = {
+  .name = "Ball_Control",
   .stack_size = 64 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -69,7 +90,10 @@ const osThreadAttr_t CAN_SendcmdTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void Alarm_Task(void *argument);
-void CAN_SendTask(void *argument);
+void Chassis_Control_Task(void *argument);
+void BigBlock_Control_Task(void *argument);
+void SkyBlock_Control_Task(void *argument);
+void Ball_Control_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -104,8 +128,17 @@ void MX_FREERTOS_Init(void) {
   /* creation of AlarmTask */
   AlarmTaskHandle = osThreadNew(Alarm_Task, NULL, &AlarmTask_attributes);
 
-  /* creation of CAN_SendcmdTask */
-  CAN_SendcmdTaskHandle = osThreadNew(CAN_SendTask, NULL, &CAN_SendcmdTask_attributes);
+  /* creation of Chassis_Control */
+  Chassis_ControlHandle = osThreadNew(Chassis_Control_Task, NULL, &Chassis_Control_attributes);
+
+  /* creation of BigBlock_Contro */
+  BigBlock_ControHandle = osThreadNew(BigBlock_Control_Task, NULL, &BigBlock_Contro_attributes);
+
+  /* creation of SkyBlock_Contro */
+  SkyBlock_ControHandle = osThreadNew(SkyBlock_Control_Task, NULL, &SkyBlock_Contro_attributes);
+
+  /* creation of Ball_Control */
+  Ball_ControlHandle = osThreadNew(Ball_Control_Task, NULL, &Ball_Control_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -135,22 +168,76 @@ __weak void Alarm_Task(void *argument)
   /* USER CODE END Alarm_Task */
 }
 
-/* USER CODE BEGIN Header_CAN_SendTask */
+/* USER CODE BEGIN Header_Chassis_Control_Task */
 /**
-* @brief Function implementing the CAN_SendcmdTask thread.
+* @brief Function implementing the Chassis_Control thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_CAN_SendTask */
-void CAN_SendTask(void *argument)
+/* USER CODE END Header_Chassis_Control_Task */
+void Chassis_Control_Task(void *argument)
 {
-  /* USER CODE BEGIN CAN_SendTask */
+  /* USER CODE BEGIN Chassis_Control_Task */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END CAN_SendTask */
+  /* USER CODE END Chassis_Control_Task */
+}
+
+/* USER CODE BEGIN Header_BigBlock_Control_Task */
+/**
+* @brief Function implementing the BigBlock_Contro thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_BigBlock_Control_Task */
+void BigBlock_Control_Task(void *argument)
+{
+  /* USER CODE BEGIN BigBlock_Control_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END BigBlock_Control_Task */
+}
+
+/* USER CODE BEGIN Header_SkyBlock_Control_Task */
+/**
+* @brief Function implementing the SkyBlock_Contro thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_SkyBlock_Control_Task */
+void SkyBlock_Control_Task(void *argument)
+{
+  /* USER CODE BEGIN SkyBlock_Control_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END SkyBlock_Control_Task */
+}
+
+/* USER CODE BEGIN Header_Ball_Control_Task */
+/**
+* @brief Function implementing the Ball_Control thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Ball_Control_Task */
+void Ball_Control_Task(void *argument)
+{
+  /* USER CODE BEGIN Ball_Control_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Ball_Control_Task */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -8,6 +8,7 @@
 #include "includes.h"
 #include "FD_Canqueue.h"
 #include <string.h>
+#include "protocol.h"
 
 FDCAN_SendQueueType CAN1_Txqueue;
 FDCAN_SendQueueType CAN2_Txqueue;
@@ -25,10 +26,16 @@ void CAN_InitSendQueue(void)
     CAN1_Txqueue.Front = CAN1_Txqueue.Rear = 0;
     CAN2_Txqueue.Front = CAN2_Txqueue.Rear = 0;
     CAN3_Txqueue.Front = CAN3_Txqueue.Rear = 0;
+    Chassis_queue.Front=Chassis_queue.Rear=0;
+    BigBlock_queue.Front=BigBlock_queue.Rear=0;
+    Sky_queue.Front=Sky_queue.Rear=0;
+    Ball_queue.Front=Ball_queue.Rear=0;
+
 
     CAN1_Txqueue.Canx = FDCAN1;
     CAN2_Txqueue.Canx = FDCAN2;
     CAN3_Txqueue.Canx = FDCAN3;
+    Chassis_queue.Canx=BigBlock_queue.Canx=Sky_queue.Canx=Ball_queue.Canx=FDCAN1;
 
     s_can_queue_initialized = true;
 }

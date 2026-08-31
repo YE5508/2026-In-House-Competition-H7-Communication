@@ -16,6 +16,7 @@
 #include "bsp_led.h"
 #include "vofa.h"
 #include "UnitreeMotor.h"
+#include "protocol.h"
 
 /* CubeMX 默认任务 LEDTask:四灯流水 */
 void Alarm_Task(void *argument)
@@ -34,22 +35,38 @@ void Alarm_Task(void *argument)
     }
 }
 
-void CAN_SendcmdTask(void *argument)
+void Chassis_Control_Task(void *argument)
 {
-  uint8_t feedback_tick = 0U;
   for(;;)
   {
-    CAN_DequeueTx(&CAN1_Txqueue);
-    CAN_DequeueTx(&CAN2_Txqueue);
-    if (++feedback_tick >= 10U)
-    {
-      feedback_tick = 0U;
-      if (huart6.gState == HAL_UART_STATE_READY)
-      {
-        CommunicationFeedback_ToTxPack(&CommunicationFeedback, &TxMsgPack);
-        (void)Deal_TxPack(&TxMsgPack);
-      }
-    }
+    CAN_DequeueTx(&Chassis_queue);
+    osDelay(1);
+  }
+}
+
+void BigBlock_Control_Task(void *argument)
+{
+  for(;;)
+  {
+    CAN_DequeueTx(&BigBlock_queue);
+    osDelay(1);
+  }
+}
+
+void SkyBlock_Control_Task(void *argument)
+{
+  for(;;)
+  {
+    CAN_DequeueTx(&Sky_queue);
+    osDelay(1);
+  }
+}
+
+void Ball_Control_Task(void *argument)
+{
+  for(;;)
+  {
+    CAN_DequeueTx(&Ball_queue);
     osDelay(1);
   }
 }
