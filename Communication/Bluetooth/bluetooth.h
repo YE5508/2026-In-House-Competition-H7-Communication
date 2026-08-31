@@ -103,4 +103,5 @@ static bool Debug_Receive(RX_MSGPACK *RxMsgPack);
 
 bool Deal_RxPack(u8 data);
 bool Deal_TxPack(TX_MSGPACK *TxMsgPack);
+void Bluetooth_UartTxCplt(void);
 #endif /* __BLUETOOTH_H__ */

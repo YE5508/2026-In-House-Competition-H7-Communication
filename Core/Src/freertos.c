@@ -186,7 +186,7 @@ __weak void Alarm_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_Chassis_Control_Task */
-void Chassis_Control_Task(void *argument)
+__weak void Chassis_Control_Task(void *argument)
 {
   /* USER CODE BEGIN Chassis_Control_Task */
   /* Infinite loop */
@@ -204,7 +204,7 @@ void Chassis_Control_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_BigBlock_Control_Task */
-void BigBlock_Control_Task(void *argument)
+__weak void BigBlock_Control_Task(void *argument)
 {
   /* USER CODE BEGIN BigBlock_Control_Task */
   /* Infinite loop */
@@ -222,7 +222,7 @@ void BigBlock_Control_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_SkyBlock_Control_Task */
-void SkyBlock_Control_Task(void *argument)
+__weak void SkyBlock_Control_Task(void *argument)
 {
   /* USER CODE BEGIN SkyBlock_Control_Task */
   /* Infinite loop */
@@ -240,7 +240,7 @@ void SkyBlock_Control_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_Ball_Control_Task */
-void Ball_Control_Task(void *argument)
+__weak void Ball_Control_Task(void *argument)
 {
   /* USER CODE BEGIN Ball_Control_Task */
   /* Infinite loop */
@@ -258,7 +258,7 @@ void Ball_Control_Task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_Yaw_Feedback_Task */
-void Yaw_Feedback_Task(void *argument)
+__weak void Yaw_Feedback_Task(void *argument)
 {
   /* USER CODE BEGIN Yaw_Feedback_Task */
   /* Infinite loop */

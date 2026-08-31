@@ -47,7 +47,7 @@ extern "C"
     bool CAN_Queue_IfEmpty(FDCAN_SendQueueType *queue);
     bool CAN_Queue_IfFull(FDCAN_SendQueueType *queue);
     bool CAN_DequeueTx(FDCAN_SendQueueType *queue);
-    void CAN_Enqueue(FDCAN_SendQueueType *queue, FDCAN_RxHeaderTypeDef Rxheader, uint8_t Rxdata[]);
+    bool CAN_Enqueue(FDCAN_SendQueueType *queue, FDCAN_RxHeaderTypeDef Rxheader, uint8_t Rxdata[]);
     void HeaderPrepare(uint32_t sendCode, uint32_t datalen, FDCAN_RxHeaderTypeDef *rxheader);
 
 #ifdef __cplusplus

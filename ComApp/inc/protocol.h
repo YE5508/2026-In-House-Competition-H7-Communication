@@ -85,10 +85,6 @@ typedef struct
 }Ball_CtrlWord_t;
 
 
-
-
-
-
 /* 全局控制字变量 */
 extern Chassis_CtrlWord_t Chassis_CtrlWord;
 extern BigBlock_CtrlWord_t BigBlock_CtrlWord;

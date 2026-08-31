@@ -8,7 +8,10 @@ FDCAN_SendQueueType BigBlock_queue;
 FDCAN_SendQueueType Sky_queue;
 FDCAN_SendQueueType Ball_queue;
 
-
+Chassis_CtrlWord_t Chassis_CtrlWord;
+BigBlock_CtrlWord_t BigBlock_CtrlWord;
+Sky_CtrlWord_t Sky_CtrlWord;
+Ball_CtrlWord_t Ball_CtrlWord;
 /*
  * 函数名：Car_CtrlWord_Unpack
  * 功能：  从全局接收缓冲区 RxMsgPack 中解包数据，
@@ -84,19 +87,18 @@ void Car_CtrlWord_Unpack(void)
 
 
 /* 入队一帧扩展数据帧；实际发送由 CAN 队列定时出队完成。 */
-static void Protocol_Enqueue(FDCAN_SendQueueType* queue,uint32_t id, uint8_t dlc, const uint8_t *data)
+static bool Protocol_Enqueue(FDCAN_SendQueueType* queue,uint32_t id, uint8_t dlc, const uint8_t *data)
 {
     FDCAN_RxHeaderTypeDef header;
-    uint8_t can_bus;
 
     HeaderPrepare(id, dlc, &header);
-    CAN_Enqueue(queue, header, (uint8_t *)data);
+    return CAN_Enqueue(queue, header, (uint8_t *)data);
 }
 
-static void Protocol_EnqueueCommand(FDCAN_SendQueueType* queue,uint32_t id, uint8_t command, uint8_t value)
+static bool Protocol_EnqueueCommand(FDCAN_SendQueueType* queue,uint32_t id, uint8_t command, uint8_t value)
 {
     const uint8_t data[2] = {command, value};
-    Protocol_Enqueue(queue,id, 2U, data);
+    return Protocol_Enqueue(queue,id, 2U, data);
 }
 
 
@@ -160,6 +162,9 @@ void BigBlock_CtrlWord_SendCAN(void)
 
 void Sky_CtrlWord_t_SendCAN(void)
 {
+    static bool jaw_state_valid = false;
+    static uint8_t last_jaw_state = 0U;
+
     if(Sky_CtrlWord.SkyBlock_Enable&&Sky_CtrlWord.SkyBlock_Protect.now&&!Sky_CtrlWord.SkyBlock_Protect.pre)
     {
         Protocol_EnqueueCommand(&Sky_queue,SKYBLOCK_ENABLE, 'M', Sky_CtrlWord.SkyBlock_Enable);
@@ -193,12 +198,22 @@ void Sky_CtrlWord_t_SendCAN(void)
         Protocol_EnqueueCommand(&Sky_queue,SKYBLOCK_ARM_RESET, 'A', 'R');
     }
 
-    Protocol_EnqueueCommand(&Sky_queue,SKYBLOCK_JAW_OPEN, 'R', Sky_CtrlWord.SkyBlock_JawOpenClose);
+    if (!jaw_state_valid || Sky_CtrlWord.SkyBlock_JawOpenClose != last_jaw_state)
+    {
+        if (Protocol_EnqueueCommand(&Sky_queue, SKYBLOCK_JAW_OPEN, 'R', Sky_CtrlWord.SkyBlock_JawOpenClose))
+        {
+            last_jaw_state = Sky_CtrlWord.SkyBlock_JawOpenClose;
+            jaw_state_valid = true;
+        }
+    }
     
 }
 
 void Ball_CtrlWord_t_SendCAN(void)
 {
+    static bool air_pump_state_valid = false;
+    static uint8_t last_air_pump_state = 0U;
+
     if(Ball_CtrlWord.Ball_Enable&&Ball_CtrlWord.Ball_Protect.now&&!Ball_CtrlWord.Ball_Protect.pre)
     {
         Protocol_EnqueueCommand(&Ball_queue,BALL_ENABLE, 'M', Ball_CtrlWord.Ball_Enable);
@@ -224,5 +239,12 @@ void Ball_CtrlWord_t_SendCAN(void)
         Protocol_EnqueueCommand(&Ball_queue,BALL_PUT, 'R', 'B');
     }
 
-    Protocol_EnqueueCommand(&Ball_queue,BALL_OPEN, 'R', Ball_CtrlWord.Ball_AirPump);
+    if (!air_pump_state_valid || Ball_CtrlWord.Ball_AirPump != last_air_pump_state)
+    {
+        if (Protocol_EnqueueCommand(&Ball_queue, BALL_OPEN, 'R', Ball_CtrlWord.Ball_AirPump))
+        {
+            last_air_pump_state = Ball_CtrlWord.Ball_AirPump;
+            air_pump_state_valid = true;
+        }
+    }
 }

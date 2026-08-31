@@ -129,11 +129,11 @@ bool CAN_DequeueTx(FDCAN_SendQueueType *queue)
     return true;
 }
 
-void CAN_Enqueue(FDCAN_SendQueueType *queue, FDCAN_RxHeaderTypeDef Rxheader, uint8_t Rxdata[])
+bool CAN_Enqueue(FDCAN_SendQueueType *queue, FDCAN_RxHeaderTypeDef Rxheader, uint8_t Rxdata[])
 {
     if (CAN_Queue_IfFull(queue))
     {
-        return;
+        return false;
     }
 
     queue->FDCAN_DataSend[queue->Rear].DLC = (Rxheader.DataLength > 8U) ? 8U : (uint8_t)Rxheader.DataLength;
@@ -143,6 +143,7 @@ void CAN_Enqueue(FDCAN_SendQueueType *queue, FDCAN_RxHeaderTypeDef Rxheader, uin
            (size_t)queue->FDCAN_DataSend[queue->Rear].DLC * sizeof(uint8_t));
 
     queue->Rear = (uint8_t)(((uint16_t)queue->Rear + 1U) % FDCAN_QUEUESIZE);
+    return true;
 }
 
 void HeaderPrepare(uint32_t sendCode, uint32_t datalen, FDCAN_RxHeaderTypeDef *rxheader)

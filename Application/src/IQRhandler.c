@@ -242,7 +242,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     else if (huart->Instance == UART4)
         HAL_UARTEx_ReceiveToIdle_DMA(&huart4, UART4_RxBuffer, UART_RX_BUFFER_SIZE);
     else if (huart->Instance == USART6)
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart6, UART6_RxBuffer, UART_RX_BUFFER_SIZE);
+        HAL_UART_Receive_DMA(&huart6, UART6_RxBuffer, 1);
     else if (huart->Instance == UART9)
         HAL_UARTEx_ReceiveToIdle_DMA(&huart9, UART9_RxBuffer, UART_RX_BUFFER_SIZE);
 }

@@ -3,6 +3,7 @@
 PACK_MSG PackMsg = {0};
 RX_MSGPACK RxMsgPack = {0};
 TX_MSGPACK TxMsgPack = {0};
+static volatile bool s_bt_tx_busy = false;
 
 static bool Debug_Receive(RX_MSGPACK *RxMsgPack)
 {
@@ -76,6 +77,7 @@ bool Deal_RxPack(u8 data)
                         return false;
                     }
                 Car_CtrlWord_Unpack();
+                Chassis_CtrlWord_SendCAN();
                 BigBlock_CtrlWord_SendCAN();
                 Sky_CtrlWord_t_SendCAN();
                 Ball_CtrlWord_t_SendCAN();
@@ -103,10 +105,16 @@ bool Deal_RxPack(u8 data)
     }
     return true;
 }
+
 bool Deal_TxPack(TX_MSGPACK *TxMsgPack)
 {
     u8 txindex = 0;
     u8 sum = 0;
+
+    if (s_bt_tx_busy)
+    {
+        return false;
+    }
 
     PackMsg.TxData[txindex++] = DEBUG_PREFIX;
 #if TX_BYTE_NUM
@@ -154,8 +162,14 @@ bool Deal_TxPack(TX_MSGPACK *TxMsgPack)
     }
     if (HAL_UART_Transmit_DMA(&BOARD_BLUETOOTH_UART, PackMsg.TxData, txindex) != HAL_OK)
     {
-        Error_Handler();
+        return false;
     }
 
+    s_bt_tx_busy = true;
     return true;
+}
+
+void Bluetooth_UartTxCplt(void)
+{
+    s_bt_tx_busy = false;
 }

@@ -41,8 +41,6 @@
 #include "bsp_solenoid.h"
 #include "app_config.h"
 #include "bluetooth.h"
-#include "seize_sky.h"
-#include "holding_jaw.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
