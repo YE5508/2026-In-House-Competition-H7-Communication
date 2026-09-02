@@ -33,8 +33,8 @@ void Car_CtrlWord_Unpack(void)
 
         /* ========== 底盘速度(short) ========== */
     Chassis_CtrlWord.CarVx = RxMsgPack.shorts[0];
-    Chassis_CtrlWord.CarVy = RxMsgPack.shorts[1];
-    Chassis_CtrlWord.CarVw = RxMsgPack.shorts[2];
+    Chassis_CtrlWord.CarVy = -RxMsgPack.shorts[1];
+    Chassis_CtrlWord.CarVw = -RxMsgPack.shorts[2];
 
     /* ========== 角度(float) ========== */
     Chassis_CtrlWord.Angle = RxMsgPack.floats[0];
@@ -67,6 +67,8 @@ void Car_CtrlWord_Unpack(void)
     Sky_CtrlWord.SkyBlock_Carry.now   = RxMsgPack.bools[16];
     Sky_CtrlWord.SkyBlock_BlockOrBall  = RxMsgPack.bools[17];
     Sky_CtrlWord.SkyBlock_JawOpenClose = RxMsgPack.bools[18];
+    Sky_CtrlWord.SkyBlock_Idle.pre=Sky_CtrlWord.SkyBlock_Idle.now;
+    Sky_CtrlWord.SkyBlock_Idle.now=RxMsgPack.bools[26];
 
     /* ========== 灵石(球)机构 ========== */
     Ball_CtrlWord.Ball_Enable       = RxMsgPack.bools[19];
@@ -115,6 +117,10 @@ void Chassis_CtrlWord_SendCAN(void)
     {
         Protocol_EnqueueCommand(&Chassis_queue,CHASSIS_ENABLE, 'M', Chassis_CtrlWord.Chassis_Enable);
     }
+    else if(!Chassis_CtrlWord.Chassis_Enable)
+    {
+        Protocol_EnqueueCommand(&Chassis_queue,CHASSIS_ENABLE, 'M', Chassis_CtrlWord.Chassis_Enable);
+    }
 
         /* short 已由蓝牙协议按目标比例提供，直接以小端格式拷贝。 */
     speed = Chassis_CtrlWord.CarVx; memcpy(&data[0], &speed, sizeof(speed));
@@ -145,6 +151,10 @@ void BigBlock_CtrlWord_SendCAN(void)
     if(BigBlock_CtrlWord.BigBlock_Enable&&BigBlock_CtrlWord.BigBlock_Protect.now&&!BigBlock_CtrlWord.BigBlock_Protect.pre)
     {
         Protocol_EnqueueCommand(&BigBlock_queue,BIGBLOCK_ENABLE, 'M', BigBlock_CtrlWord.BigBlock_Enable);
+    }
+    else if(BigBlock_CtrlWord.BigBlock_Enable==0) 
+    {
+        Protocol_EnqueueCommand(&BigBlock_queue,BIGBLOCK_ENABLE, 'M', BigBlock_CtrlWord.BigBlock_Enable);   
     }
 
     if(BigBlock_CtrlWord.BigBlock_PreGrab.now&&!BigBlock_CtrlWord.BigBlock_PreGrab.pre)
@@ -177,6 +187,10 @@ void Sky_CtrlWord_t_SendCAN(void)
     if(Sky_CtrlWord.SkyBlock_Enable&&Sky_CtrlWord.SkyBlock_Protect.now&&!Sky_CtrlWord.SkyBlock_Protect.pre)
     {
         Protocol_EnqueueCommand(&Sky_queue,SKYBLOCK_ENABLE, 'M', Sky_CtrlWord.SkyBlock_Enable);
+    }
+    else if(!Sky_CtrlWord.SkyBlock_Enable)
+    {
+        Protocol_EnqueueCommand(&Sky_queue,SKYBLOCK_ENABLE, 'M', 0);
     }
 
     if(Sky_CtrlWord.SkyBlock_Reset.now&&!Sky_CtrlWord.SkyBlock_Reset.pre)
@@ -215,6 +229,10 @@ void Sky_CtrlWord_t_SendCAN(void)
             jaw_state_valid = true;
         }
     }
+    if(!Sky_CtrlWord.SkyBlock_Idle.now&&!Sky_CtrlWord.SkyBlock_Idle.pre)
+    {
+        Protocol_EnqueueCommand(&Sky_queue,SKYBLCOK_IDLE, 'I', 'M');
+    }
     
 }
 
@@ -230,6 +248,10 @@ void Ball_CtrlWord_t_SendCAN(void)
     {
         Protocol_EnqueueCommand(&Ball_queue,BALL_ENABLE, 'M', Ball_CtrlWord.Ball_Enable);
     }
+    else if(!Ball_CtrlWord.Ball_Enable)
+    {
+        Protocol_EnqueueCommand(&Ball_queue,BALL_ENABLE, 'M', Ball_CtrlWord.Ball_Enable);
+    }
 
     if(Ball_CtrlWord.Ball_Reset.now&&!Ball_CtrlWord.Ball_Reset.pre)
     {
@@ -238,7 +260,7 @@ void Ball_CtrlWord_t_SendCAN(void)
 
     if(Ball_CtrlWord.Ball_Grab.now&&!Ball_CtrlWord.Ball_Grab.pre)
     {
-        Protocol_EnqueueCommand(&Ball_queue,BALL_RESET, 'R', 'S');
+        Protocol_EnqueueCommand(&Ball_queue,BALL_GRAB, 'R', 'S');
     }
 
     if(Ball_CtrlWord.Ball_Carry.now&&!Ball_CtrlWord.Ball_Carry.pre)

@@ -111,10 +111,10 @@ bool Deal_TxPack(TX_MSGPACK *TxMsgPack)
     u8 txindex = 0;
     u8 sum = 0;
 
-    if (s_bt_tx_busy)
-    {
-        return false;
-    }
+//    if (s_bt_tx_busy)
+//    {
+//        return false;
+//    }
 
     PackMsg.TxData[txindex++] = DEBUG_PREFIX;
 #if TX_BYTE_NUM
@@ -160,7 +160,7 @@ bool Deal_TxPack(TX_MSGPACK *TxMsgPack)
     {
         return false;
     }
-    if (HAL_UART_Transmit_DMA(&BOARD_BLUETOOTH_UART, PackMsg.TxData, txindex) != HAL_OK)
+    if (HAL_UART_Transmit_IT(&BOARD_BLUETOOTH_UART, PackMsg.TxData, txindex) != HAL_OK)
     {
         return false;
     }

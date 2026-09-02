@@ -213,11 +213,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == USART6)
     {
+        uint8_t rx_byte;
+
+        /* DMA writes memory while D-Cache is enabled; discard the cached line before reading it. */
+        SCB_InvalidateDCache_by_Addr((uint32_t *)UART6_RxBuffer, 32U);
+        rx_byte = UART6_RxBuffer[0];
+
         if(HAL_UART_Receive_DMA(&huart6, UART6_RxBuffer, 1)!=HAL_OK)
         {
             Error_Handler();
         }
-          Deal_RxPack(UART6_RxBuffer[0]);
+        Deal_RxPack(rx_byte);
     }
 
 }

@@ -40,7 +40,7 @@ void Chassis_Control_Task(void *argument)
   for(;;)
   {
     CAN_DequeueTx(&Chassis_queue);
-    osDelay(1);
+    osDelay(10);
   }
 }
 
@@ -48,8 +48,8 @@ void BigBlock_Control_Task(void *argument)
 {
   for(;;)
   {
-    CAN_DequeueTx(&BigBlock_queue);
-    osDelay(1);
+   CAN_DequeueTx(&BigBlock_queue);
+    osDelay(10);
   }
 }
 
@@ -57,8 +57,8 @@ void SkyBlock_Control_Task(void *argument)
 {
   for(;;)
   {
-    CAN_DequeueTx(&Sky_queue);
-    osDelay(1);
+	CAN_DequeueTx(&Sky_queue);
+    osDelay(10);
   }
 }
 
@@ -67,7 +67,7 @@ void Ball_Control_Task(void *argument)
   for(;;)
   {
     CAN_DequeueTx(&Ball_queue);
-    osDelay(1);
+    osDelay(10);
   }
 }
 
@@ -75,7 +75,9 @@ void Yaw_Feedback_Task(void *argument)
 {
     for(;;)
   {
-    Deal_TxPack(&TxMsgPack);
+    
+		
+		Deal_TxPack(&TxMsgPack);
     osDelay(1);
   }
 }

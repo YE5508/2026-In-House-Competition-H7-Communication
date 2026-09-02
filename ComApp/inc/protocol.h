@@ -68,6 +68,7 @@ typedef struct
     Btn_t    SkyBlock_Carry;        // bools[16] 持天空块(按钮)/放球位置
     uint8_t  SkyBlock_BlockOrBall;  // bools[17] 块/球选择(开关)
     uint8_t  SkyBlock_JawOpenClose; // bools[18] 爪子开/关(开关)
+    Btn_t    SkyBlock_Idle;
 
 }Sky_CtrlWord_t;
 
