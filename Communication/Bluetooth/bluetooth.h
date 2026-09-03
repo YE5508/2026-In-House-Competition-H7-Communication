@@ -8,7 +8,7 @@
 #include "app_config.h"
 
 // “接收数据包”内数据的类型与个数
-#define RX_BOOL_NUM 28
+#define RX_BOOL_NUM 29
 #define RX_BYTE_NUM 0
 #define RX_SHORT_NUM 3
 #define RX_INT_NUM 0

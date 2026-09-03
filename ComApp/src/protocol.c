@@ -52,6 +52,8 @@ void Car_CtrlWord_Unpack(void)
     BigBlock_CtrlWord.BigBlock_Put.pre     = BigBlock_CtrlWord.BigBlock_Put.now;
     BigBlock_CtrlWord.BigBlock_Put.now     = RxMsgPack.bools[9];
     BigBlock_CtrlWord.BigBlock_LayerHeight = RxMsgPack.bools[10];
+    BigBlock_CtrlWord.BigBlock_Release1.pre=BigBlock_CtrlWord.BigBlock_Release1.now;
+    BigBlock_CtrlWord.BigBlock_Release1.now=RxMsgPack.bools[28];
 
     /* ========== 天空块机构 ========== */
     Sky_CtrlWord.SkyBlock_Enable      = RxMsgPack.bools[11];
@@ -68,7 +70,7 @@ void Car_CtrlWord_Unpack(void)
     Sky_CtrlWord.SkyBlock_BlockOrBall  = RxMsgPack.bools[17];
     Sky_CtrlWord.SkyBlock_JawOpenClose = RxMsgPack.bools[18];
     Sky_CtrlWord.SkyBlock_Idle.pre=Sky_CtrlWord.SkyBlock_Idle.now;
-    Sky_CtrlWord.SkyBlock_Idle.now=RxMsgPack.bools[26];
+    Sky_CtrlWord.SkyBlock_Idle.now=RxMsgPack.bools[27];
 
     /* ========== 灵石(球)机构 ========== */
     Ball_CtrlWord.Ball_Enable       = RxMsgPack.bools[19];
@@ -176,6 +178,10 @@ void BigBlock_CtrlWord_SendCAN(void)
     {
         Protocol_EnqueueCommand(&BigBlock_queue,BIGBLOCK_PUT, 'P', BigBlock_CtrlWord.BigBlock_LayerHeight+1);
     }
+    if(BigBlock_CtrlWord.BigBlock_Release1.now&&!BigBlock_CtrlWord.BigBlock_Release1.pre)
+    {
+        Protocol_EnqueueCommand(&BigBlock_queue,BIGBLOCK_RELEASE1,'S',BigBlock_CtrlWord.BigBlock_Release1.now);
+    }
 
 }
 
@@ -229,10 +235,11 @@ void Sky_CtrlWord_t_SendCAN(void)
             jaw_state_valid = true;
         }
     }
-    if(!Sky_CtrlWord.SkyBlock_Idle.now&&!Sky_CtrlWord.SkyBlock_Idle.pre)
+    if(Sky_CtrlWord.SkyBlock_Idle.now&&!Sky_CtrlWord.SkyBlock_Idle.pre)
     {
         Protocol_EnqueueCommand(&Sky_queue,SKYBLCOK_IDLE, 'I', 'M');
     }
+    
     
 }
 

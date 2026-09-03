@@ -54,6 +54,7 @@ typedef struct
     Btn_t    BigBlock_Grab;         // bools[8]  取块(按钮)
     Btn_t    BigBlock_Put;          // bools[9]  放块(按钮)
     uint8_t  BigBlock_LayerHeight;  // bools[10] 层高(拨杆/开关)
+    Btn_t  BigBlock_Release1;
 
 }BigBlock_CtrlWord_t;
 
