@@ -33,7 +33,7 @@ void Car_CtrlWord_Unpack(void)
 
         /* ========== 底盘速度(short) ========== */
     Chassis_CtrlWord.CarVx = RxMsgPack.shorts[0];
-    Chassis_CtrlWord.CarVy = -RxMsgPack.shorts[1];
+    Chassis_CtrlWord.CarVy = RxMsgPack.shorts[1];
     Chassis_CtrlWord.CarVw = -RxMsgPack.shorts[2];
 
     /* ========== 角度(float) ========== */
@@ -138,7 +138,17 @@ void Chassis_CtrlWord_SendCAN(void)
     if(Chassis_CtrlWord.Chassis_LockAngle)
     {
         memcpy(data, &Chassis_CtrlWord.Angle, sizeof(Chassis_CtrlWord.Angle));
-        Protocol_Enqueue(&Chassis_queue,CHASSIS_LOCK_ANGLE, 4U, data);
+        data[4] = Chassis_CtrlWord.Chassis_LockAngle;
+        Protocol_Enqueue(&Chassis_queue,CHASSIS_LOCK_ANGLE, 5U, data);
+    }
+    else 
+    {
+        data[0]=0;
+        data[1]=0;
+        data[2]=0;
+        data[3]=0;
+        data[4] = Chassis_CtrlWord.Chassis_LockAngle;
+        Protocol_Enqueue(&Chassis_queue,CHASSIS_LOCK_ANGLE, 5U, data);
     }
 
 
